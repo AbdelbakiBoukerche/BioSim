@@ -19,7 +19,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self._active_bacteria_list: List[Bacteria] = []
         self._active_soil = None
-        self._depletion_function: ESoilDepletionFunction = ESoilDepletionFunction.SIGMOID
+        self._depletion_function: ESoilDepletionFunction = ESoilDepletionFunction.EXPONENTIAL
 
         self._connections()
 
@@ -46,8 +46,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._populate_bacteria()
         self._populate_bacteria_oxygen_requirements()
         self._populate_depletion_simulation_function()
-        self.comboBox_depletionFunction.setCurrentIndex(ESoilDepletionFunction.SIGMOID.value)
+        self.comboBox_depletionFunction.setCurrentIndex(ESoilDepletionFunction.EXPONENTIAL.value)
         self._populate_soil()
+
 
     def _populate_bacteria(self):
         for i, bacteria in enumerate(bacteria_list):
@@ -77,15 +78,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         axis_x = QtCharts.QValueAxis()
         axis_x.setLabelFormat("%d")
         axis_x.setTitleText("Soil Depth (cm)")
-        # tick_count = min(len(population_dict[next(iter(population_dict))]), self.chart_view.size().width() / 50)
-        # axis_x.setTickCount(int(tick_count))
+        axis_x.setMinorTickCount(5)
         axis_x.setRange(0, len(population_dict[next(iter(population_dict))]))
 
         axis_y = QtCharts.QValueAxis()
         axis_y.setLabelFormat("%.2f")
         axis_y.setTitleText("Bacterial Population")
-        # tick_count = min(len(population_dict[next(iter(population_dict))]), self.chart_view.size().height() / 50)
-        # axis_y.setTickCount(int(tick_count))
+        axis_y.setMinorTickCount(5)
         axis_y.setRange(0, max([max(values) for values in population_dict.values()]))
 
         chart.addAxis(axis_x, QtCore.Qt.AlignmentFlag.AlignBottom)
@@ -118,13 +117,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         axis_x = QtCharts.QValueAxis()
         axis_x.setLabelFormat('%d')
         axis_x.setTitleText('Soil Depth (cm)')
-        # axis_x.setTickCount(10)
+        axis_x.setMinorTickCount(5)
         axis_x.setRange(0, self._active_soil.max_depth)
 
         axis_y = QtCharts.QValueAxis()
         axis_y.setLabelFormat('%.2f')
         axis_y.setTitleText('Oxygen Percentage')
-        # axis_y.setTickCount(10)
+        axis_y.setMinorTickCount(5)
         axis_y.setRange(0, 100)
 
         chart.addAxis(axis_x, QtCore.Qt.AlignmentFlag.AlignBottom)
@@ -146,6 +145,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.chart_view_oxygen.setRubberBand(QtCharts.QChartView.RectangleRubberBand)
         self.chart_view_oxygen.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.chart_view_oxygen.customContextMenuRequested.connect(self._zoom_out_oxygen)
+        self.chart_view_oxygen.chart().series()[0].hovered.connect(self._oxygen_hovered_slot)
+
+    def _oxygen_hovered_slot(self, pos: QtCore.QPointF, hovered: bool):
+        if not hovered:
+            return
+
+        message = 'Oxygen ({},{})'.format(pos.x(), pos.y())
+        self.statusBar().showMessage(message)
 
     def _zoom_out_oxygen(self):
         self.chart_view_oxygen.chart().zoomReset()
@@ -158,13 +165,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         axis_x = QtCharts.QValueAxis()
         axis_x.setLabelFormat('%d')
         axis_x.setTitleText('Soil Depth (cm)')
-        # axis_x.setTickCount(10)
+        axis_x.setMinorTickCount(5)
         axis_x.setRange(0, self._active_soil.max_depth)
 
         axis_y = QtCharts.QValueAxis()
         axis_y.setLabelFormat('%.2f')
         axis_y.setTitleText('Nutrient Percentage')
-        # axis_y.setTickCount(10)
+        axis_y.setMinorTickCount(5)
         axis_y.setRange(0, 100)
 
         chart.addAxis(axis_x, QtCore.Qt.AlignmentFlag.AlignBottom)
@@ -381,7 +388,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableWidget_bacteriaList.removeRow(index)
         self._active_bacteria_list.pop(index)
 
-    def _simulate_distribution(self, initial_population=100):
+    def _simulate_distribution(self, initial_population=10000):
         max_iterations = self._active_soil.max_depth
 
         population_dict = {bacteria.species_name: np.zeros(max_iterations) for bacteria in self._active_bacteria_list}

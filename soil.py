@@ -25,7 +25,8 @@ class Soil:
             return self.initial_o2  # 21% oxygen at 0cm
 
         elif depletion_function == ESoilDepletionFunction.EXPONENTIAL:
-            return self.initial_o2 * np.exp(-self.o2_depletion_rate * depth)
+            decay_factor = -self.o2_depletion_rate * np.power(depth, 0.5)
+            return self.initial_o2 * np.exp(decay_factor)
 
         elif depletion_function == ESoilDepletionFunction.SIGMOID:
             return self.initial_o2 / (1 + np.exp(self.o2_depletion_rate * (depth - self.max_depth / 2)))
@@ -42,7 +43,8 @@ class Soil:
             return self.initial_nutrient
 
         elif depletion_function == ESoilDepletionFunction.EXPONENTIAL:
-            return self.initial_nutrient * np.exp(-self.nutrient_depletion_rate * depth)
+            decay_factor = -self.nutrient_depletion_rate * np.power(depth, 0.5)
+            return self.initial_nutrient * np.exp(decay_factor)
 
         elif depletion_function == ESoilDepletionFunction.SIGMOID:
             return self.initial_nutrient / (1 + np.exp(self.nutrient_depletion_rate * (depth - self.max_depth / 2)))
