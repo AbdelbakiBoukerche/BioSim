@@ -5,6 +5,7 @@ from PySide6 import QtWidgets, QtCharts, QtCore, QtGui
 from ui.main_window_ui import Ui_MainWindow
 from bacteria import Bacteria, bacteria_list, EBacteriaType
 from soil import Soil, soil_list, ESoilDepletionFunction
+from interactive_chart_view import InteractiveChartView
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -30,14 +31,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                                                  'Death Rate', 'Competition'])
         self.tableWidget_bacteriaList.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
 
-        self.chart_view = QtCharts.QChartView()
-        self.chart_view.setRenderHint(QtGui.QPainter.Antialiasing)
-
-        self.chart_view_oxygen = QtCharts.QChartView()
-        self.chart_view_oxygen.setRenderHint(QtGui.QPainter.Antialiasing)
-
-        self.chart_view_nutrient = QtCharts.QChartView()
-        self.chart_view_nutrient.setRenderHint(QtGui.QPainter.Antialiasing)
+        self.chart_view = InteractiveChartView()
+        self.chart_view_oxygen = InteractiveChartView()
+        self.chart_view_nutrient = InteractiveChartView()
 
         self.groupBox_simulation.layout().addWidget(self.chart_view)
         self.groupBox_simulation.layout().addWidget(self.chart_view_oxygen)
@@ -48,7 +44,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._populate_depletion_simulation_function()
         self.comboBox_depletionFunction.setCurrentIndex(ESoilDepletionFunction.EXPONENTIAL.value)
         self._populate_soil()
-
 
     def _populate_bacteria(self):
         for i, bacteria in enumerate(bacteria_list):
@@ -73,7 +68,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def _plot_distribution(self, population_dict):
         chart = QtCharts.QChart()
         chart.setTitle("Bacterial Population Distribution")
-        chart.setAnimationOptions(QtCharts.QChart.AllAnimations)
+        # chart.setAnimationOptions(QtCharts.QChart.AllAnimations)
 
         axis_x = QtCharts.QValueAxis()
         axis_x.setLabelFormat("%d")
@@ -102,17 +97,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             series.attachAxis(axis_y)
 
         self.chart_view.setChart(chart)
-        self.chart_view.setRubberBand(QtCharts.QChartView.RectangleRubberBand)
-        self.chart_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.chart_view.customContextMenuRequested.connect(self._zoom_out)
-
-    def _zoom_out(self):
-        self.chart_view.chart().zoomReset()
 
     def _plot_oxygen_availability(self):
         chart = QtCharts.QChart()
         chart.setTitle('Oxygen Availability')
-        chart.setAnimationOptions(QtCharts.QChart.AllAnimations)
+        # chart.setAnimationOptions(QtCharts.QChart.AllAnimations)
 
         axis_x = QtCharts.QValueAxis()
         axis_x.setLabelFormat('%d')
@@ -142,9 +131,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         series.attachAxis(axis_y)
 
         self.chart_view_oxygen.setChart(chart)
-        self.chart_view_oxygen.setRubberBand(QtCharts.QChartView.RectangleRubberBand)
-        self.chart_view_oxygen.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.chart_view_oxygen.customContextMenuRequested.connect(self._zoom_out_oxygen)
         self.chart_view_oxygen.chart().series()[0].hovered.connect(self._oxygen_hovered_slot)
 
     def _oxygen_hovered_slot(self, pos: QtCore.QPointF, hovered: bool):
@@ -154,13 +140,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         message = 'Oxygen ({},{})'.format(pos.x(), pos.y())
         self.statusBar().showMessage(message)
 
-    def _zoom_out_oxygen(self):
-        self.chart_view_oxygen.chart().zoomReset()
-
     def _plot_nutrient_availability(self):
         chart = QtCharts.QChart()
         chart.setTitle('Nutrient Availability')
-        chart.setAnimationOptions(QtCharts.QChart.AllAnimations)
+        # chart.setAnimationOptions(QtCharts.QChart.AllAnimations)
 
         axis_x = QtCharts.QValueAxis()
         axis_x.setLabelFormat('%d')
@@ -190,12 +173,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         series.attachAxis(axis_y)
 
         self.chart_view_nutrient.setChart(chart)
-        self.chart_view_nutrient.setRubberBand(QtCharts.QChartView.RectangleRubberBand)
-        self.chart_view_nutrient.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.chart_view_nutrient.customContextMenuRequested.connect(self._zoom_out_nutrient)
-
-    def _zoom_out_nutrient(self):
-        self.chart_view_nutrient.chart().zoomReset()
 
     def _connections(self):
         self.action_startSimulation.triggered.connect(self._start_simulation_slot)
@@ -381,7 +358,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def _remove_bacteria_clicked_slot(self):
         selected_row = self.tableWidget_bacteriaList.selectionModel().selectedRows()
 
-        if selected_row[0] is None:
+        if len(selected_row) == 0:
             return
 
         index = selected_row[0].row()
