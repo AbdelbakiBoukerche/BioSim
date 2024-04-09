@@ -353,6 +353,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.actionAdvanced_Charts.isChecked():
             dialog = QtWidgets.QDialog(parent=self)
             dialog.setWindowFlag(QtCore.Qt.WindowMinimizeButtonHint)
+            dialog.setFixedHeight(640)
+            dialog.setFixedWidth(640)
 
             chart = ChartWidget(self._active_bacteria_list, self._active_soil, self._depletion_function, parent=dialog)
             chart.show_graph(result)
