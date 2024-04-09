@@ -9,8 +9,9 @@ class EBacteriaType(Enum):
 
 
 class Bacteria:
-    def __init__(self, species_name: str, oxygen_requirement: EBacteriaType, min_nutrient: float, growth_rate: float,
-                 death_rate: float, competition_factor: float):
+    def __init__(self, uid: int, species_name: str, oxygen_requirement: EBacteriaType, min_nutrient: float,
+                 growth_rate: float, death_rate: float, competition_factor: float):
+        self.uid = uid
         self.species_name = species_name
         self.oxygen_requirement = oxygen_requirement  # EBacteriaType enum
         self.min_nutrient = min_nutrient  # Minimum nutrient requirement for growth
@@ -23,6 +24,7 @@ class Bacteria:
 bacteria_list: List[Bacteria] = [
     # AEROBIC
     Bacteria(
+        uid=1,
         species_name="Bacillus subtilis",
         oxygen_requirement=EBacteriaType.AEROBIC,
         min_nutrient=0.1,
@@ -31,6 +33,7 @@ bacteria_list: List[Bacteria] = [
         competition_factor=0.5,
     ),
     Bacteria(
+        uid=2,
         species_name="Pseudomonas aeruginosa",
         oxygen_requirement=EBacteriaType.AEROBIC,
         min_nutrient=0.3,
@@ -39,6 +42,7 @@ bacteria_list: List[Bacteria] = [
         competition_factor=0.7,
     ),
     Bacteria(
+        uid=3,
         species_name="Nitrosomonas europaea",
         oxygen_requirement=EBacteriaType.AEROBIC,
         min_nutrient=0.05,
@@ -48,6 +52,7 @@ bacteria_list: List[Bacteria] = [
     ),
     # ANAEROBIC
     Bacteria(
+        uid=5,
         species_name="Clostridium perfringens",
         oxygen_requirement=EBacteriaType.ANAEROBIC,
         min_nutrient=0.4,
@@ -56,6 +61,7 @@ bacteria_list: List[Bacteria] = [
         competition_factor=0.2,
     ),
     Bacteria(
+        uid=6,
         species_name="Desulfovibrio desulfuricans",
         oxygen_requirement=EBacteriaType.ANAEROBIC,
         min_nutrient=0.1,
@@ -64,6 +70,7 @@ bacteria_list: List[Bacteria] = [
         competition_factor=0.1,
     ),
     Bacteria(
+        uid=7,
         species_name="Methanosarcina barkeri",
         oxygen_requirement=EBacteriaType.ANAEROBIC,
         min_nutrient=0.2,
@@ -73,6 +80,7 @@ bacteria_list: List[Bacteria] = [
     ),
     # FACULTATIVE_ANAEROBIC
     Bacteria(
+        uid=9,
         species_name="E. coli",
         oxygen_requirement=EBacteriaType.FACULTATIVE_ANAEROBIC,
         min_nutrient=0.2,  # Minimum nutrient requirement
@@ -81,6 +89,7 @@ bacteria_list: List[Bacteria] = [
         competition_factor=0.3,  # Moderately competitive impact on other bacteria
     ),
     Bacteria(
+        uid=10,
         species_name="Staphylococcus aureus",
         oxygen_requirement=EBacteriaType.FACULTATIVE_ANAEROBIC,
         min_nutrient=0.25,  # Minimum nutrient requirement
@@ -89,6 +98,7 @@ bacteria_list: List[Bacteria] = [
         competition_factor=0.4,  # Moderately competitive impact on other bacteria
     ),
     Bacteria(
+        uid=11,
         species_name="Enterococcus faecalis",
         oxygen_requirement=EBacteriaType.FACULTATIVE_ANAEROBIC,
         min_nutrient=0.2,

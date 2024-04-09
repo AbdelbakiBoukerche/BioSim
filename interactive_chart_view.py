@@ -32,20 +32,20 @@ class InteractiveChartView(QtCharts.QChartView):
 
             event.accept()
 
-        if event.button() == QtCore.Qt.RightButton:
-            self.chart().zoomReset()
+    def mouseDoubleClickEvent(self, event):
+        self.chart().zoomReset()
 
-            for series in self.chart().series():
-                x_range_max = series.count()
-                y_max = series.points()[0]
-                self.chart().axisX(series).setRange(0, x_range_max)
+        for series in self.chart().series():
+            x_range_max = series.count()
+            y_max = series.points()[0]
+            self.chart().axisX(series).setRange(0, x_range_max)
 
-                if y_max.y() <= 100:
-                    self.chart().axisY(series).setRange(0, 100)
-                else:
-                    self.chart().axisY(series).setRange(0, y_max.y())
+            if y_max.y() <= 100:
+                self.chart().axisY(series).setRange(0, 100)
+            else:
+                self.chart().axisY(series).setRange(0, y_max.y())
 
-            event.accept()
+        event.accept()
 
     def mouseMoveEvent(self, event):
         if event.buttons() == QtCore.Qt.LeftButton:

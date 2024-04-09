@@ -25,7 +25,7 @@ class Soil:
             return self.initial_o2  # 21% oxygen at 0cm
 
         elif depletion_function == ESoilDepletionFunction.EXPONENTIAL:
-            decay_factor = -self.o2_depletion_rate * np.power(depth, 0.5)
+            decay_factor = -self.o2_depletion_rate * np.power(depth, 0.3)
             return self.initial_o2 * np.exp(decay_factor)
 
         elif depletion_function == ESoilDepletionFunction.SIGMOID:

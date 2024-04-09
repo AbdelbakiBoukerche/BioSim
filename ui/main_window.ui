@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>713</width>
+    <width>777</width>
     <height>393</height>
    </rect>
   </property>
@@ -480,7 +480,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>713</width>
+     <width>777</width>
      <height>22</height>
     </rect>
    </property>
@@ -489,6 +489,7 @@
      <string>Simulation</string>
     </property>
     <addaction name="action_startSimulation"/>
+    <addaction name="actionAdvanced_Charts"/>
    </widget>
    <addaction name="menuSimulation"/>
   </widget>
@@ -496,6 +497,14 @@
   <action name="action_startSimulation">
    <property name="text">
     <string>Start</string>
+   </property>
+  </action>
+  <action name="actionAdvanced_Charts">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Advanced Charts</string>
    </property>
   </action>
  </widget>

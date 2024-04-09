@@ -27,9 +27,12 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(713, 393)
+        MainWindow.resize(777, 393)
         self.action_startSimulation = QAction(MainWindow)
         self.action_startSimulation.setObjectName(u"action_startSimulation")
+        self.actionAdvanced_Charts = QAction(MainWindow)
+        self.actionAdvanced_Charts.setObjectName(u"actionAdvanced_Charts")
+        self.actionAdvanced_Charts.setCheckable(True)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout_3 = QGridLayout(self.centralwidget)
@@ -337,7 +340,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 713, 22))
+        self.menubar.setGeometry(QRect(0, 0, 777, 22))
         self.menuSimulation = QMenu(self.menubar)
         self.menuSimulation.setObjectName(u"menuSimulation")
         MainWindow.setMenuBar(self.menubar)
@@ -373,6 +376,7 @@ class Ui_MainWindow(object):
 
         self.menubar.addAction(self.menuSimulation.menuAction())
         self.menuSimulation.addAction(self.action_startSimulation)
+        self.menuSimulation.addAction(self.actionAdvanced_Charts)
 
         self.retranslateUi(MainWindow)
 
@@ -382,6 +386,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.action_startSimulation.setText(QCoreApplication.translate("MainWindow", u"Start", None))
+        self.actionAdvanced_Charts.setText(QCoreApplication.translate("MainWindow", u"Advanced Charts", None))
         self.groupBox_simulation.setTitle(QCoreApplication.translate("MainWindow", u"Simulation", None))
         self.groupBox_bacteriaProperties.setTitle(QCoreApplication.translate("MainWindow", u"Bacteria Properties", None))
         self.label_competitionFactor.setText(QCoreApplication.translate("MainWindow", u"Competition Factor", None))

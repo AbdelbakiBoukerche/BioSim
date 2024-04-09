@@ -1,11 +1,13 @@
 from typing import List
 
 import numpy as np
+import uuid
 from PySide6 import QtWidgets, QtCharts, QtCore, QtGui
 from ui.main_window_ui import Ui_MainWindow
 from bacteria import Bacteria, bacteria_list, EBacteriaType
 from soil import Soil, soil_list, ESoilDepletionFunction
 from interactive_chart_view import InteractiveChartView
+from advanced_chart_widget import ChartWidget
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -131,14 +133,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         series.attachAxis(axis_y)
 
         self.chart_view_oxygen.setChart(chart)
-        self.chart_view_oxygen.chart().series()[0].hovered.connect(self._oxygen_hovered_slot)
-
-    def _oxygen_hovered_slot(self, pos: QtCore.QPointF, hovered: bool):
-        if not hovered:
-            return
-
-        message = 'Oxygen ({},{})'.format(pos.x(), pos.y())
-        self.statusBar().showMessage(message)
 
     def _plot_nutrient_availability(self):
         chart = QtCharts.QChart()
@@ -275,6 +269,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 return warning_box.exec()
 
             bacteria = Bacteria(
+                uid=uuid.uuid4().int,
                 species_name=name,
                 oxygen_requirement=EBacteriaType(oxygen_requirement),
                 min_nutrient=min_nutrient,
@@ -355,6 +350,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._plot_oxygen_availability()
         self._plot_nutrient_availability()
 
+        if self.actionAdvanced_Charts.isChecked():
+            dialog = QtWidgets.QDialog(parent=self)
+            dialog.setWindowFlag(QtCore.Qt.WindowMinimizeButtonHint)
+
+            chart = ChartWidget(self._active_bacteria_list, self._active_soil, self._depletion_function, parent=dialog)
+            chart.show_graph(result)
+
+            dialog.showNormal()
+
     def _remove_bacteria_clicked_slot(self):
         selected_row = self.tableWidget_bacteriaList.selectionModel().selectedRows()
 
@@ -374,6 +378,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for iteration in range(1, max_iterations):
             total_population = 0  # Initialize total population at current depth
+
             for i, bacteria in enumerate(self._active_bacteria_list):
                 # Check oxygen and nutrient requirements
                 aerobic_threshold = 0.01
