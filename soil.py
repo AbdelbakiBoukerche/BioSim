@@ -43,7 +43,7 @@ class Soil:
             return self.initial_nutrient
 
         elif depletion_function == ESoilDepletionFunction.EXPONENTIAL:
-            decay_factor = -self.nutrient_depletion_rate * np.power(depth, 0.5)
+            decay_factor = -self.nutrient_depletion_rate * np.power(depth, 0.3)
             return self.initial_nutrient * np.exp(decay_factor)
 
         elif depletion_function == ESoilDepletionFunction.SIGMOID:

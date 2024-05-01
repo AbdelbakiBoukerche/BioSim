@@ -407,8 +407,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     # Consider competition factor from Bacteria class (assuming it exists)
                     growth_factor *= 1 / (1 + total_population / bacteria.competition_factor)
 
-                    population_dict[bacteria.species_name][iteration] = current_population * (
-                            1 + bacteria.growth_rate * growth_factor) - bacteria.death_rate * current_population
+                    population_dict[bacteria.species_name][iteration] = (current_population * (
+                            1 + bacteria.growth_rate * growth_factor) - (bacteria.death_rate /
+                                                                         bacteria.competition_factor * 0.5)
+                                                                         * current_population)
 
             # Reset total population for the next iteration
             total_population = 0
